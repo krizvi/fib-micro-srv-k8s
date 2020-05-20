@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker-app
+  template:
+    metadata:
+      labels:
+        component: worker-app
+    spec:
+      containers:
+        - name: worker
+          image: stephengrider/multi-worker
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip
+            - name: REDIST_PORT
+              value: '6379'

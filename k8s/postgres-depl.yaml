@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres-db-srvr
+  template:
+    metadata:
+      labels:
+        component: postgres-db-srvr
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: db-pvc
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
+              subPath: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: PGPASSWORD
+                  name: pg-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-cluster-ip
+spec:
+  type: ClusterIP
+  selector:
+    component: postgres-db-srvr
+  ports:
+    - port: 5432
+      targetPort: 5432
