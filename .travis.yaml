@@ -14,7 +14,7 @@ before_install:
   - gcloud config set project fib-micro-srv-k8s
   - gcloud config set compute/zone us-central1-c
   - gcloud container clusters get-credentials my-fib-cluster
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$DOCKER_PWD" | docker login -u "$DOCKER_UID" --password-stdin
   - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
 
 script:
